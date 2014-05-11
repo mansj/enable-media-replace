@@ -128,10 +128,10 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		$new_guid = str_replace($current_filename, $new_filename, $current_guid);
 
 		// Update database file name
-        $sql = $wpdb->prepare(
-            "UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = %d;",
-            (int) $_POST["ID"]
-        );
+		$sql = $wpdb->prepare(
+			"UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = %d;",
+			(int) $_POST["ID"]
+		);
 		$wpdb->query($sql);
 
 		// Update the postmeta file name
@@ -141,17 +141,17 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 			"SELECT meta_value FROM $postmeta_table_name WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
 			(int) $_POST["ID"]
 		);
-
-        $old_meta_name = $wpdb->get_row($sql, ARRAY_A);
+		
+		$old_meta_name = $wpdb->get_row($sql, ARRAY_A);
 		$old_meta_name = $old_meta_name["meta_value"];
 
 		// Make new postmeta _wp_attached_file
 		$new_meta_name = str_replace($current_filename, $new_filename, $old_meta_name);
 		$sql = $wpdb->prepare(
-            "UPDATE $postmeta_table_name SET meta_value = '$new_meta_name' WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
-            (int) $_POST["ID"]
-        );
-        $wpdb->query($sql);
+			"UPDATE $postmeta_table_name SET meta_value = '$new_meta_name' WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
+			(int) $_POST["ID"]
+		);
+		$wpdb->query($sql);
 
 		// Make thumb and/or update metadata
 		wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $new_file) );
@@ -170,12 +170,12 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 			$post_content = $rows["post_content"];
 			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
 
-            $sql = $wpdb->prepare(
-                "UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
-                $rows["ID"]
-            );
+			$sql = $wpdb->prepare(
+				"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+				$rows["ID"]
+			);
 
-            $wpdb->query($sql);
+			$wpdb->query($sql);
 		}
 		
 		// Trigger possible updates on CDN and other plugins 
