@@ -183,7 +183,6 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 
 	}
 
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php?posted=3";
 	$returnurl = get_bloginfo("wpurl") . "/wp-admin/post.php?post={$_POST["ID"]}&action=edit&message=1";
 	
 	// Execute hook actions - thanks rubious for the suggestion!
