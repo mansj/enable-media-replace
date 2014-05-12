@@ -45,7 +45,7 @@ function emr_menu() {
  * Only languages files needs loading during init.
  */
 function enable_media_replace_init() {
-	load_plugin_textdomain( 'enable-media-replace', false, dirname( plugin_basename( __FILE__ ) ) );
+	load_plugin_textdomain( 'enable-media-replace', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
 
 /**
