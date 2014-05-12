@@ -37,6 +37,10 @@ If you want more control over the format used to display the time, you can use t
 
 == Changelog ==
 
+= 2.9.7RC1 =
+* Moved localization files into own directory. [Thank you Michael](https://github.com/michael-cannon)
+* Moved screensots into own directory. [Thank you Michael](https://github.com/michael-cannon)
+
 = 2.9.6 =
 * Added fix by Grant K Norwood to address a possible security problem in SQL statements. Thanks Grant!
 * Created GitHub repo for this plugin, please feel free to contribute at github.com/mansj/enable-media-replace
