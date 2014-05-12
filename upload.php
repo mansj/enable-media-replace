@@ -181,7 +181,57 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		// Trigger possible updates on CDN and other plugins 
 		update_attached_file( (int) $_POST["ID"], $new_file);
 
-	}
+        // Now, search-and-replace filename in post database for each thumbnail size.
+        global $_wp_additional_image_sizes;
+        $image_sizes = array();
+        foreach( get_intermediate_image_sizes() as $s ){
+            $image_sizes[ $s ] = array( 0, 0 );
+            if( in_array( $s, array( 'thumbnail', 'medium', 'large' ) ) ){
+                $image_sizes[ $s ][0] = get_option( $s . '_size_w' );
+                $image_sizes[ $s ][1] = get_option( $s . '_size_h' );
+            }else{
+                if( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $s ] ) )
+                    $image_sizes[ $s ] = array( $_wp_additional_image_sizes[ $s ]['width'], $_wp_additional_image_sizes[ $s ]['height'], );
+            }
+        }
+
+        foreach( $image_sizes as $image_size => $image_size_atts ) {
+
+            //Get current and new image file names for this image size.
+            $current_path_info = pathinfo($current_guid);
+            $new_path_info = pathinfo($new_guid);
+
+            $current_file_name = $current_path_info["dirname"] . DIRECTORY_SEPARATOR . $current_path_info["filename"] . "-" . $image_size_atts[0] . "x" . $image_size_atts[1] . "." . $current_path_info["extension"];
+            $new_file_name = $new_path_info["dirname"] . DIRECTORY_SEPARATOR . $new_path_info["filename"] . "-" . $image_size_atts[0] . "x" . $image_size_atts[1] . "." . $new_path_info["extension"];
+
+            // Search-and-replace filename in post database
+            $sql = $wpdb->prepare(
+                "SELECT ID, post_content FROM $table_name WHERE post_content LIKE %s;",
+                '%' . $current_file_name . '%'
+            );
+
+            $rs = $wpdb->get_results($sql, ARRAY_A);
+
+            foreach($rs AS $rows) {
+
+                // replace old guid with new guid
+                $post_content = $rows["post_content"];
+                $post_content = addslashes(str_replace($current_file_name, $new_file_name, $post_content));
+
+                $sql = $wpdb->prepare(
+                    "UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+                    $rows["ID"]
+                );
+
+                $wpdb->query($sql);
+            }
+
+            // Trigger possible updates on CDN and other plugins
+            update_attached_file( (int) $_POST["ID"], $new_file);
+
+        }
+
+    }
 
 	$returnurl = get_bloginfo("wpurl") . "/wp-admin/post.php?post={$_POST["ID"]}&action=edit&message=1";
 	
