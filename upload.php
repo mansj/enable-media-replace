@@ -128,24 +128,39 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		$new_guid = str_replace($current_filename, $new_filename, $current_guid);
 
 		// Update database file name
-		$wpdb->query("UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = '" . (int) $_POST["ID"] . "'");
-		
+		$sql = $wpdb->prepare(
+			"UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = %d;",
+			(int) $_POST["ID"]
+		);
+		$wpdb->query($sql);
+
 		// Update the postmeta file name
 
 		// Get old postmeta _wp_attached_file
-		$sql = "SELECT meta_value FROM $postmeta_table_name WHERE meta_key = '_wp_attached_file' AND post_id = '" . (int) $_POST["ID"] . "'";
+		$sql = $wpdb->prepare(
+			"SELECT meta_value FROM $postmeta_table_name WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
+			(int) $_POST["ID"]
+		);
+		
 		$old_meta_name = $wpdb->get_row($sql, ARRAY_A);
 		$old_meta_name = $old_meta_name["meta_value"];
 
 		// Make new postmeta _wp_attached_file
 		$new_meta_name = str_replace($current_filename, $new_filename, $old_meta_name);
-		$wpdb->query("UPDATE $postmeta_table_name SET meta_value = '$new_meta_name' WHERE meta_key = '_wp_attached_file' AND post_id = '" . (int) $_POST["ID"] . "'");
+		$sql = $wpdb->prepare(
+			"UPDATE $postmeta_table_name SET meta_value = '$new_meta_name' WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
+			(int) $_POST["ID"]
+		);
+		$wpdb->query($sql);
 
 		// Make thumb and/or update metadata
 		wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $new_file) );
 
 		// Search-and-replace filename in post database
-		$sql = "SELECT ID, post_content FROM $table_name WHERE post_content LIKE '%$current_guid%'";
+		$sql = $wpdb->prepare(
+			"SELECT ID, post_content FROM $table_name WHERE post_content LIKE %s;",
+			'%' . $current_guid . '%'
+		);
 
 		$rs = $wpdb->get_results($sql, ARRAY_A);
 		
@@ -155,15 +170,69 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 			$post_content = $rows["post_content"];
 			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
 
-			$wpdb->query("UPDATE $table_name SET post_content = '$post_content' WHERE ID = {$rows["ID"]}");
+			$sql = $wpdb->prepare(
+				"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+				$rows["ID"]
+			);
+
+			$wpdb->query($sql);
 		}
 		
 		// Trigger possible updates on CDN and other plugins 
 		update_attached_file( (int) $_POST["ID"], $new_file);
 
-	}
+        // Now, search-and-replace filename in post database for each thumbnail size.
+        global $_wp_additional_image_sizes;
+        $image_sizes = array();
+        foreach( get_intermediate_image_sizes() as $s ){
+            $image_sizes[ $s ] = array( 0, 0 );
+            if( in_array( $s, array( 'thumbnail', 'medium', 'large' ) ) ){
+                $image_sizes[ $s ][0] = get_option( $s . '_size_w' );
+                $image_sizes[ $s ][1] = get_option( $s . '_size_h' );
+            }else{
+                if( isset( $_wp_additional_image_sizes ) && isset( $_wp_additional_image_sizes[ $s ] ) )
+                    $image_sizes[ $s ] = array( $_wp_additional_image_sizes[ $s ]['width'], $_wp_additional_image_sizes[ $s ]['height'], );
+            }
+        }
 
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php?posted=3";
+        foreach( $image_sizes as $image_size => $image_size_atts ) {
+
+            //Get current and new image file names for this image size.
+            $current_path_info = pathinfo($current_guid);
+            $new_path_info = pathinfo($new_guid);
+
+            $current_file_name = $current_path_info["dirname"] . DIRECTORY_SEPARATOR . $current_path_info["filename"] . "-" . $image_size_atts[0] . "x" . $image_size_atts[1] . "." . $current_path_info["extension"];
+            $new_file_name = $new_path_info["dirname"] . DIRECTORY_SEPARATOR . $new_path_info["filename"] . "-" . $image_size_atts[0] . "x" . $image_size_atts[1] . "." . $new_path_info["extension"];
+
+            // Search-and-replace filename in post database
+            $sql = $wpdb->prepare(
+                "SELECT ID, post_content FROM $table_name WHERE post_content LIKE %s;",
+                '%' . $current_file_name . '%'
+            );
+
+            $rs = $wpdb->get_results($sql, ARRAY_A);
+
+            foreach($rs AS $rows) {
+
+                // replace old guid with new guid
+                $post_content = $rows["post_content"];
+                $post_content = addslashes(str_replace($current_file_name, $new_file_name, $post_content));
+
+                $sql = $wpdb->prepare(
+                    "UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+                    $rows["ID"]
+                );
+
+                $wpdb->query($sql);
+            }
+
+            // Trigger possible updates on CDN and other plugins
+            update_attached_file( (int) $_POST["ID"], $new_file);
+
+        }
+
+    }
+
 	$returnurl = get_bloginfo("wpurl") . "/wp-admin/post.php?post={$_POST["ID"]}&action=edit&message=1";
 	
 	// Execute hook actions - thanks rubious for the suggestion!
