@@ -127,11 +127,14 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		$new_guid = str_replace($current_filename, $new_filename, $current_guid);
 
 		// Update database file name
-		$sql = $wpdb->prepare(
-			"UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = %d;",
-			(int) $_POST["ID"]
-		);
-		$wpdb->query($sql);
+		wp_update_post( array(
+			'ID' => absint( $_POST['ID'] ),
+			'post_type' => 'attachment',
+			'post_title' => $new_filetitle,
+			'post_name' => $new_filetitle,
+			'guid' => $new_guid,
+			'post_mime_type' => $new_filetype,
+		));
 
 		// Update the postmeta file name
 
