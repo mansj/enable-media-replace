@@ -181,10 +181,6 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 	$returnurl = admin_url( '/wp-admin/upload.php' );
 }
 
-if (FORCE_SSL_ADMIN) {
-	$returnurl = str_replace("http:", "https:", $returnurl);
-}
-
 //save redirection
 wp_redirect($returnurl);
 ?>	
