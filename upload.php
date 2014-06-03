@@ -162,12 +162,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 			$post_content = $rows["post_content"];
 			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
 
-			$sql = $wpdb->prepare(
-				"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
-				$rows["ID"]
-			);
-
-			$wpdb->query($sql);
+			wp_update_post( array( 'ID' => absint( $rows['ID'] ), 'post_content' => $post_content ) );
 		}
 		
 		// Trigger possible updates on CDN and other plugins 
