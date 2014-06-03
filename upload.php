@@ -149,22 +149,17 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $new_file) );
 
 		// Search-and-replace filename in post database
-		$sql = $wpdb->prepare(
-			"SELECT ID, post_content FROM $table_name WHERE post_content LIKE %s;",
-			'%' . $current_guid . '%'
-		);
+		$rs = new WP_Query( array( 's' => $current_guid ) );
 
-		$rs = $wpdb->get_results($sql, ARRAY_A);
-		
-		foreach($rs AS $rows) {
-
-			// replace old guid with new guid
-			$post_content = $rows["post_content"];
+		if ( $rs->have_posts() ) : while( $rs->have_posts() ) : $rs->the_post();
+			$post_content = get_the_content();
 			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
 
-			wp_update_post( array( 'ID' => absint( $rows['ID'] ), 'post_content' => $post_content ) );
-		}
-		
+			wp_update_post( array( 'ID' => get_the_ID(), 'post_content' => $post_content ) );
+		endwhile; endif;
+
+		wp_reset_query();
+
 		// Trigger possible updates on CDN and other plugins 
 		update_attached_file( (int) $_POST["ID"], $new_file);
 
