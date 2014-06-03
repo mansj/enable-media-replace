@@ -13,16 +13,11 @@
 if (!current_user_can('upload_files'))
 	wp_die(__('You do not have permission to upload files.', 'enable-media-replace'));
 
-global $wpdb;
-
-$table_name = $wpdb->prefix . "posts";
-
-$sql = "SELECT guid, post_mime_type FROM $table_name WHERE ID = " . (int) $_GET["attachment_id"];
-
-list($current_filename, $current_filetype) = $wpdb->get_row($sql, ARRAY_N);
-
+$current_file = get_post( absint( $_GET['attachment_id'] ) );
+$current_filename = $current_file->guid;
 $current_filename = substr($current_filename, (strrpos($current_filename, "/") + 1));
 
+$current_filetype = $current_file->post_mime_type;
 
 ?>
 <div class="wrap">
