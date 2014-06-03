@@ -37,7 +37,7 @@ add_shortcode('file_modified', 'emr_get_modified_date');
  * To suppress it in the menu we give it an empty menu title.
  */
 function emr_menu() {
-	add_submenu_page(NULL, __("Replace media", "enable-media-replace"), '','upload_files', __FILE__, 'emr_options');
+	add_submenu_page(NULL, __("Replace media", "enable-media-replace"), '','upload_files', 'enable-media-replace/enable-media-replace', 'emr_options');
 }
 
 /**
