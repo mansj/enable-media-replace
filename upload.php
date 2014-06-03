@@ -182,5 +182,4 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 }
 
 //save redirection
-wp_redirect($returnurl);
-?>	
+wp_safe_redirect( $returnurl );
