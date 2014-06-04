@@ -49,16 +49,22 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 
 		<input type="file" name="userfile" />
 
+		<?php do_action( 'emr_before_replace_type_options' ); ?>
+
+	<?php if ( apply_filters( 'emr_display_replace_type_options', true ) ) : ?>
 		<p><?php echo __("Select media replacement type:", "enable-media-replace"); ?></p>
 
 		<label for="replace_type_1"><input CHECKED id="replace_type_1" type="radio" name="replace_type" value="replace"> <?php echo __("Just replace the file", "enable-media-replace"); ?></label>
 		<p class="howto"><?php echo __("Note: This option requires you to upload a file of the same type (", "enable-media-replace"); ?><?php echo $current_filetype; ?><?php echo __(") as the one you are replacing. The name of the attachment will stay the same (", "enable-media-replace"); ?><?php echo $current_filename; ?><?php echo __(") no matter what the file you upload is called.", "enable-media-replace"); ?></p>
 
+		<?php if ( apply_filters( 'emr_enable_replace_and_search', true ) ) : ?>
 		<label for="replace_type_2"><input id="replace_type_2" type="radio" name="replace_type" value="replace_and_search"> <?php echo __("Replace the file, use new file name and update all links", "enable-media-replace"); ?></label>
 		<p class="howto"><?php echo __("Note: If you check this option, the name and type of the file you are about to upload will replace the old file. All links pointing to the current file (", "enable-media-replace"); ?><?php echo $current_filename; ?><?php echo __(") will be updated to point to the new file name.", "enable-media-replace"); ?></p>
 		<p class="howto"><?php echo __("Please note that if you upload a new image, only embeds/links of the original size image will be replaced in your posts."); ?></p>
-
+		<?php endif; ?>
+	<?php else : ?>
+		<input type="hidden" name="replace_type" value="replace" />
+	<?php endif; ?>
 		<input type="submit" class="button" value="<?php echo __("Upload", "enable-media-replace"); ?>" /> <a href="#" onclick="history.back();"><?php echo __("Cancel", "enable-media-replace"); ?></a>
-
 	</form>
 </div>

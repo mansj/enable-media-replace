@@ -106,9 +106,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 
 		// Trigger possible updates on CDN and other plugins 
 		update_attached_file( (int) $_POST["ID"], $current_file);
-	}
-
-	else {
+	} elseif ( 'replace_and_search' == $replace_type && apply_filters( 'emr_enable_replace_and_search', true ) ) {
 		// Replace file, replace file name, update meta data, replace links pointing to old file name
 
 		emr_delete_current_files($current_file);
