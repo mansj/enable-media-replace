@@ -58,10 +58,9 @@ function emr_delete_current_files($current_file) {
 
 }
 
-
-// Get old guid and filetype from DB
-$sql = "SELECT guid, post_mime_type FROM $table_name WHERE ID = '" . (int) $_POST["ID"] . "'";
-list($current_filename, $current_filetype) = $wpdb->get_row($sql, ARRAY_N);
+$current_file = get_post( absint( $_POST['ID'] ) );
+$current_filename = $current_file->guid;
+$current_filetype = $current_file->post_mime_type;
 
 // Massage a bunch of vars
 $current_guid = $current_filename;
@@ -126,62 +125,45 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		$new_guid = str_replace($current_filename, $new_filename, $current_guid);
 
 		// Update database file name
-		$sql = $wpdb->prepare(
-			"UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = %d;",
-			(int) $_POST["ID"]
-		);
-		$wpdb->query($sql);
+		wp_update_post( array(
+			'ID' => absint( $_POST['ID'] ),
+			'post_type' => 'attachment',
+			'post_title' => $new_filetitle,
+			'post_name' => $new_filetitle,
+			'guid' => $new_guid,
+			'post_mime_type' => $new_filetype,
+		));
 
 		// Update the postmeta file name
 
 		// Get old postmeta _wp_attached_file
-		$sql = $wpdb->prepare(
-			"SELECT meta_value FROM $postmeta_table_name WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
-			(int) $_POST["ID"]
-		);
-		
-		$old_meta_name = $wpdb->get_row($sql, ARRAY_A);
-		$old_meta_name = $old_meta_name["meta_value"];
+		$old_meta_name = get_post_meta( absint( $_POST['id'] ), '_wp_attached_file', true );
 
 		// Make new postmeta _wp_attached_file
 		$new_meta_name = str_replace($current_filename, $new_filename, $old_meta_name);
-		$sql = $wpdb->prepare(
-			"UPDATE $postmeta_table_name SET meta_value = '$new_meta_name' WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
-			(int) $_POST["ID"]
-		);
-		$wpdb->query($sql);
+		update_post_meta( absint( $_POST['ID'] ), '_wp_attached_file', $new_meta_name );
 
 		// Make thumb and/or update metadata
 		wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $new_file) );
 
 		// Search-and-replace filename in post database
-		$sql = $wpdb->prepare(
-			"SELECT ID, post_content FROM $table_name WHERE post_content LIKE %s;",
-			'%' . $current_guid . '%'
-		);
+		$rs = new WP_Query( array( 's' => $current_guid ) );
 
-		$rs = $wpdb->get_results($sql, ARRAY_A);
-		
-		foreach($rs AS $rows) {
-
-			// replace old guid with new guid
-			$post_content = $rows["post_content"];
+		if ( $rs->have_posts() ) : while( $rs->have_posts() ) : $rs->the_post();
+			$post_content = get_the_content();
 			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
 
-			$sql = $wpdb->prepare(
-				"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
-				$rows["ID"]
-			);
+			wp_update_post( array( 'ID' => get_the_ID(), 'post_content' => $post_content ) );
+		endwhile; endif;
 
-			$wpdb->query($sql);
-		}
-		
+		wp_reset_query();
+
 		// Trigger possible updates on CDN and other plugins 
 		update_attached_file( (int) $_POST["ID"], $new_file);
 
 	}
 
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/post.php?post={$_POST["ID"]}&action=edit&message=1";
+	$returnurl = admin_url( 'post.php?post=' . absint( $_POST['ID'] ) . '&action=edit&message=1' );
 	
 	// Execute hook actions - thanks rubious for the suggestion!
 	if (isset($new_guid)) { do_action("enable-media-replace-upload-done", ($new_guid ? $new_guid : $current_guid)); }
@@ -189,13 +171,8 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 } else {
 	//TODO Better error handling when no file is selected.
 	//For now just go back to media management
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php";
-}
-
-if (FORCE_SSL_ADMIN) {
-	$returnurl = str_replace("http:", "https:", $returnurl);
+	$returnurl = admin_url( '/wp-admin/upload.php' );
 }
 
 //save redirection
-wp_redirect($returnurl);
-?>	
+wp_safe_redirect( $returnurl );
