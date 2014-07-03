@@ -2,8 +2,8 @@
 /**
  * Uploadscreen for selecting and uploading new media file
  *
- * @author      Måns Jonasson  <http://www.mansjonasson.se>
- * @copyright   Måns Jonasson 13 sep 2010
+ * @author      Mï¿½ns Jonasson  <http://www.mansjonasson.se>
+ * @copyright   Mï¿½ns Jonasson 13 sep 2010
  * @version     $Revision: 2303 $ | $Date: 2010-09-13 11:12:35 +0200 (ma, 13 sep 2010) $
  * @package     wordpress
  * @subpackage  enable-media-replace
@@ -60,7 +60,7 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 		<?php if ( apply_filters( 'emr_enable_replace_and_search', true ) ) : ?>
 		<label for="replace_type_2"><input id="replace_type_2" type="radio" name="replace_type" value="replace_and_search"> <?php echo __("Replace the file, use new file name and update all links", "enable-media-replace"); ?></label>
 		<p class="howto"><?php echo __("Note: If you check this option, the name and type of the file you are about to upload will replace the old file. All links pointing to the current file (", "enable-media-replace"); ?><?php echo $current_filename; ?><?php echo __(") will be updated to point to the new file name.", "enable-media-replace"); ?></p>
-		<p class="howto"><?php echo __("Please note that if you upload a new image, only embeds/links of the original size image will be replaced in your posts."); ?></p>
+		<p class="howto"><?php echo __("Please note that if you upload a new image, only embeds/links of the original size image will be replaced in your posts.", "enable-media-replace"); ?></p>
 		<?php endif; ?>
 	<?php else : ?>
 		<input type="hidden" name="replace_type" value="replace" />
