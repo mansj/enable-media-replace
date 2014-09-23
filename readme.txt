@@ -37,6 +37,9 @@ If you want more control over the format used to display the time, you can use t
 
 == Changelog ==
 
+= 3.01 =
+* Tiny fix to re-insert the EMR link in the media list view.
+
 = 3.0 =
 * Updated for WordPress 4.0
 * Now inheriting permissions of the replaced files,  [Thank you Fiwad](https://github.com/fiwad)
