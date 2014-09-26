@@ -19,7 +19,7 @@ msgstr ""
 #: enable-media-replace.php:40 enable-media-replace.php:79
 #: enable-media-replace.php:120
 msgid "Replace media"
-msgstr "Substituir média"
+msgstr "Substituir media"
 
 #: enable-media-replace.php:79
 msgid "Upload a new file"
@@ -36,19 +36,19 @@ msgstr "Revisto"
 
 #: popup.php:14 upload.php:3
 msgid "You do not have permission to upload files."
-msgstr "Não tem permissões para carregar ficheiros."
+msgstr "Não tem permissão para carregar ficheiros."
 
 #: popup.php:30
 msgid "Replace Media Upload"
-msgstr "Carregar Substituição de Média"
+msgstr "Carregar Substituição de Media"
 
 #: popup.php:46
 msgid "NOTE: You are about to replace the media file"
-msgstr "NOTA: Está prestes a substituir o ficheiro de média"
+msgstr "NOTA: Irá substituir o ficheiro de media"
 
 #: popup.php:46
 msgid "There is no undo. Think about it!"
-msgstr "Não é possível cancelar esta acção!"
+msgstr "Não será possível voltar a trás!"
 
 #: popup.php:48
 msgid "Choose a file to upload from your computer"
@@ -56,7 +56,7 @@ msgstr "Escolher um ficheiro para carregar a partir do computador"
 
 #: popup.php:52
 msgid "Select media replacement type:"
-msgstr "Seleccione o tipo de substituição de média"
+msgstr "Seleccione o tipo de substituição de media"
 
 #: popup.php:54
 msgid "Just replace the file"
