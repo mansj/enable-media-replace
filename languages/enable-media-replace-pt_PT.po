@@ -38,7 +38,7 @@ msgstr "Revisto"
 
 #: ../popup.php:14 ../upload.php:3
 msgid "You do not have permission to upload files."
-msgstr "You do not have permission to upload files."
+msgstr "Não tem permissão para carregar ficheiros."
 
 #: ../popup.php:30
 msgid "Replace Media Upload"
