@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.7.3\n"
+"X-Generator: Poedit 1.7.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -38,11 +38,11 @@ msgstr "Revisto"
 
 #: ../popup.php:14 ../upload.php:3
 msgid "You do not have permission to upload files."
-msgstr "Não tem permissão para carregar ficheiros."
+msgstr "You do not have permission to upload files."
 
 #: ../popup.php:30
 msgid "Replace Media Upload"
-msgstr "Carregar Substituição de Media"
+msgstr "Carregar substituição de media"
 
 #: ../popup.php:46
 msgid "NOTE: You are about to replace the media file"
