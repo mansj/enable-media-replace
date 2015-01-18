@@ -65,8 +65,8 @@ function enable_media_replace( $form_fields, $post ) {
 		$current_screen = get_current_screen();
 		if ( !is_null($current_screen) && $current_screen->base == 'post' && $current_screen->post_type == 'attachment' ) { $on_media_edit_screen = true; }
 	}
-	
-	if ($on_media_edit_screen == true) {
+
+	if ($on_media_edit_screen == true || substr($post->post_mime_type, 0, 5) == 'image') {
 
 		$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&action=media_replace&attachment_id=" . $post->ID);
 		$action = "media_replace";
