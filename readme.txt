@@ -1,7 +1,7 @@
 === Enable Media Replace ===
 Contributors: mungobbq
 Tags: admin, attachment, media, files
-Requires at least: 3.0
+Requires at least: 3.5
 Tested up to: 4.1
 Stable tag: trunk
 
@@ -36,6 +36,12 @@ So `[file_modified id=870]` would display the last time the file with ID 870 was
 If you want more control over the format used to display the time, you can use the format option, so `[file_modified id=870 format=Y-m-d]` would display the file modification date but not the time. The format string uses [standard PHP date() formatting tags](http://php.net/manual/en/function.date.php). 
 
 == Changelog ==
+
+= 3.0.3 =
+* Scrapped old method of detecting media screen, button to replace media will now show up in more places, yay!
+* Made sure the call to get_attached_file() no longer skips filters, in response to several users wishes.
+* Suppressed error messages on chmod() 
+* Added Japanese translation (Thank you, chacomv!)
 
 = 3.0.2 =
 * Cleaned up language files

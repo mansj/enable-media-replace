@@ -102,7 +102,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		move_uploaded_file($_FILES["userfile"]["tmp_name"], $current_file);
 
 		// Chmod new file to original file permissions
-		chmod($current_file, $original_file_perms);
+		@chmod($current_file, $original_file_perms);
 
 		// Make thumb and/or update metadata
 		wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $current_file ) );
@@ -122,7 +122,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		move_uploaded_file($_FILES["userfile"]["tmp_name"], $new_file);
 
 		// Chmod new file to original file permissions
-		chmod($current_file, $original_file_perms);
+		@chmod($current_file, $original_file_perms);
 
 		$new_filetitle = preg_replace('/\.[^.]+$/', '', basename($new_file));
 		$new_filetitle = apply_filters( 'enable_media_replace_title', $new_filetitle ); // Thanks Jonas Lundman (http://wordpress.org/support/topic/add-filter-hook-suggestion-to)
