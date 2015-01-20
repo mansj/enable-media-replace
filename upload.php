@@ -1,6 +1,6 @@
 <?php
 if (!current_user_can('upload_files'))
-	wp_die(__('You do not have permission to upload files.'));
+	wp_die(__('You do not have permission to upload files.', 'enable-media-replace'));
 
 // Define DB table names
 global $wpdb;
@@ -81,7 +81,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 	$filedata = wp_check_filetype_and_ext($_FILES["userfile"]["tmp_name"], $_FILES["userfile"]["name"]);
 	
 	if ($filedata["ext"] == "") {
-		echo __("File type does not meet security guidelines. Try another.");
+		echo __("File type does not meet security guidelines. Try another.", 'enable-media-replace');
 		exit;
 	}
 	

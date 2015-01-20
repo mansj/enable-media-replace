@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enable-media-replace\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-03 14:32+0100\n"
+"POT-Creation-Date: 2015-01-16 16:33-0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
@@ -12,77 +12,79 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.6.4\n"
+"X-Generator: Poedit 1.7.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: ..\n"
 
-#: enable-media-replace.php:40 enable-media-replace.php:79
-#: enable-media-replace.php:120
+#: ../enable-media-replace.php:40 ../enable-media-replace.php:79
+#: ../enable-media-replace.php:120
 msgid "Replace media"
 msgstr "Substituir media"
 
-#: enable-media-replace.php:79
+#: ../enable-media-replace.php:79
 msgid "Upload a new file"
 msgstr "Carregar novo ficheiro"
 
-#: enable-media-replace.php:79
+#: ../enable-media-replace.php:79
 msgid "To replace the current file, click the link and upload a replacement."
 msgstr ""
 "Para subtituir o ficheiro actual, clique na ligação e carregue um substituto."
 
-#: enable-media-replace.php:168
+#: ../enable-media-replace.php:161
 msgid "Revised"
 msgstr "Revisto"
 
-#: popup.php:14 upload.php:3
+#: ../popup.php:14 ../upload.php:3
 msgid "You do not have permission to upload files."
 msgstr "Não tem permissão para carregar ficheiros."
 
-#: popup.php:30
+#: ../popup.php:30
 msgid "Replace Media Upload"
-msgstr "Carregar Substituição de Media"
+msgstr "Carregar substituição de media"
 
-#: popup.php:46
+#: ../popup.php:46
 msgid "NOTE: You are about to replace the media file"
 msgstr "NOTA: Irá substituir o ficheiro de media"
 
-#: popup.php:46
+#: ../popup.php:46
 msgid "There is no undo. Think about it!"
 msgstr "Não será possível voltar a trás!"
 
-#: popup.php:48
+#: ../popup.php:48
 msgid "Choose a file to upload from your computer"
 msgstr "Escolher um ficheiro para carregar a partir do computador"
 
-#: popup.php:52
+#: ../popup.php:55
 msgid "Select media replacement type:"
 msgstr "Seleccione o tipo de substituição de media"
 
-#: popup.php:54
+#: ../popup.php:57
 msgid "Just replace the file"
 msgstr "Apenas substituir o ficheiro"
 
-#: popup.php:55
+#: ../popup.php:58
 msgid "Note: This option requires you to upload a file of the same type ("
 msgstr "Nota: Esta opção requer o carregamento de um ficheiro do mesmo tipo ("
 
-#: popup.php:55
+#: ../popup.php:58
 msgid ""
 ") as the one you are replacing. The name of the attachment will stay the "
 "same ("
 msgstr ") daquele a substituir. O nome do ficheiro permanecerá o mesmo ("
 
-#: popup.php:55
+#: ../popup.php:58
 msgid ") no matter what the file you upload is called."
 msgstr "), independentemente do nome do ficheiro carregado."
 
-#: popup.php:57
+#: ../popup.php:61
 msgid "Replace the file, use new file name and update all links"
 msgstr ""
 "Substituir o ficheiro, usar o novo nome de ficheiro e actualizar todas as "
 "ligações"
 
-#: popup.php:58
+#: ../popup.php:62
 msgid ""
 "Note: If you check this option, the name and type of the file you are about "
 "to upload will replace the old file. All links pointing to the current file ("
@@ -91,19 +93,37 @@ msgstr ""
 "carregar irá substituir os do ficheiro antigo. Todas as ligações que "
 "referenciam o ficheiro actual ("
 
-#: popup.php:58
+#: ../popup.php:62
 msgid ") will be updated to point to the new file name."
 msgstr ") serão actualizadas de forma a referenciar o novo nome de ficheiro."
 
-#: popup.php:60
+#: ../popup.php:63
+msgid ""
+"Please note that if you upload a new image, only embeds/links of the "
+"original size image will be replaced in your posts."
+msgstr ""
+"Por favor tenha em atenção que se carregar uma nova imagem, apenas as "
+"imagens incorporadas e ligações com o tamanho original serão substituídas "
+"nos seus artigos."
+
+#: ../popup.php:68
 msgid "Upload"
 msgstr "Carregar"
 
-#: popup.php:60
+#: ../popup.php:68
 msgid "Cancel"
 msgstr "Cancelar"
 
-#: upload.php:33
+#: ../upload.php:26
+#, php-format
+msgid ""
+"The file %1$s can not be deleted by the web server, most likely because the "
+"permissions on the file are wrong."
+msgstr ""
+"O ficheiro %1$s não pode ser apagado pelo servidor web, provavelmente porque "
+"as permissões do ficheiro estão incorrectas."
+
+#: ../upload.php:84
 msgid "File type does not meet security guidelines. Try another."
 msgstr ""
 "O tipo de ficheiro não está de acordo com os padrões de segurança. Tente "
