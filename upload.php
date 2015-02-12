@@ -67,7 +67,7 @@ list($current_filename, $current_filetype) = $wpdb->get_row($sql, ARRAY_N);
 $current_guid = $current_filename;
 $current_filename = substr($current_filename, (strrpos($current_filename, "/") + 1));
 
-$current_file = get_attached_file((int) $_POST["ID"], true);
+$current_file = get_attached_file((int) $_POST["ID"], apply_filters( 'emr_unfiltered_get_attached_file', true ));
 $current_path = substr($current_file, 0, (strrpos($current_file, "/")));
 $current_file = str_replace("//", "/", $current_file);
 $current_filename = basename($current_file);
