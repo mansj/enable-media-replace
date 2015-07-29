@@ -127,11 +127,17 @@ function emr_get_modified_date($atts) {
     // Get path to file
 	$current_file = get_attached_file($id);
 
+	if ( ! file_exists( $current_file ) ) {
+		return $content;
+	}
+
 	// Get file modification time
 	$filetime = filemtime($current_file);
 
-	// do date conversion
-	$content = date($format, $filetime);
+	if ( false !== $filetime ) {
+		// do date conversion
+		$content = date( $format, $filetime );
+	}
 	
 	return $content;
 
