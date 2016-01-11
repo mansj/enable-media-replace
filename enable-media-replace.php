@@ -3,15 +3,13 @@
 Plugin Name: Enable Media Replace
 Plugin URI: http://www.mansjonasson.se/enable-media-replace
 Description: Enable replacing media files by uploading a new file in the "Edit Media" section of the WordPress Media Library.
-Version: 3.0.3
+Version: 3.0.4
 Author: Måns Jonasson
 Author URI: http://www.mansjonasson.se
 
 Dual licensed under the MIT and GPL licenses:
 http://www.opensource.org/licenses/mit-license.php
 http://www.gnu.org/licenses/gpl.html
-
-Developed for .SE (Stiftelsen för Internetinfrastruktur) - http://www.iis.se
 */
 
 /**

@@ -2,7 +2,7 @@
 Contributors: mungobbq
 Tags: admin, attachment, media, files
 Requires at least: 3.5
-Tested up to: 4.2.4
+Tested up to: 4.4.1
 Stable tag: trunk
 
 Enables replacing attachment files by simply uploading a new file in the media library edit view.
@@ -36,6 +36,11 @@ So `[file_modified id=870]` would display the last time the file with ID 870 was
 If you want more control over the format used to display the time, you can use the format option, so `[file_modified id=870 format=Y-m-d]` would display the file modification date but not the time. The format string uses [standard PHP date() formatting tags](http://php.net/manual/en/function.date.php). 
 
 == Changelog ==
+
+= 3.0.4 =
+* Fixed typo in .pt translations (https://github.com/mansj/enable-media-replace/pull/18)
+* Fixed better error handling in modification date functions (https://github.com/mansj/enable-media-replace/pull/16)
+* Tested with WP 4.4.1
 
 = 3.0.3 =
 * Scrapped old method of detecting media screen, button to replace media will now show up in more places, yay!
