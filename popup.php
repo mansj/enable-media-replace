@@ -30,7 +30,12 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 	<h2><?php echo __("Replace Media Upload", "enable-media-replace"); ?></h2>
 
 	<?php
-	$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&noheader=true&action=media_replace_upload&attachment_id=" . (int) $_GET["attachment_id"]);
+	$url = add_query_arg( array(
+			'page'			=> 'enable-media-replace/enable-media-replace.php',
+			'noheader'		=> 'true',
+			'action'		=> 'media_replace_upload',
+			'attachment_id'	=> (int) $_GET["attachment_id"],
+		), admin_url( "upload.php" ) );
 	$action = "media_replace_upload";
     $formurl = wp_nonce_url( $url, $action );
 	if (FORCE_SSL_ADMIN) {
