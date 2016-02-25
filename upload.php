@@ -130,7 +130,11 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 
 		// Update database file name
 		$sql = $wpdb->prepare(
-			"UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = %d;",
+			"UPDATE $table_name SET post_title = %s, post_name = %s, guid = %s, post_mime_type = %s WHERE ID = %d;",
+			$new_filetitle,
+			$new_filetitle,
+			$new_guid,
+			$new_filetype,
 			(int) $_POST["ID"]
 		);
 		$wpdb->query($sql);
@@ -149,7 +153,8 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		// Make new postmeta _wp_attached_file
 		$new_meta_name = str_replace($current_filename, $new_filename, $old_meta_name);
 		$sql = $wpdb->prepare(
-			"UPDATE $postmeta_table_name SET meta_value = '$new_meta_name' WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
+			"UPDATE $postmeta_table_name SET meta_value = %s WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
+			$new_meta_name,
 			(int) $_POST["ID"]
 		);
 		$wpdb->query($sql);
@@ -164,15 +169,16 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		);
 
 		$rs = $wpdb->get_results($sql, ARRAY_A);
-		
+
 		foreach($rs AS $rows) {
 
 			// replace old guid with new guid
 			$post_content = $rows["post_content"];
-			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
+			$post_content = str_replace($current_guid, $new_guid, $post_content);
 
 			$sql = $wpdb->prepare(
-				"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+				"UPDATE $table_name SET post_content = %s WHERE ID = %d;",
+				$post_content,
 				$rows["ID"]
 			);
 
