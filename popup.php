@@ -26,7 +26,6 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 
 ?>
 <div class="wrap">
-		<div id="icon-upload" class="icon32"><br /></div>
 	<h2><?php echo __("Replace Media Upload", "enable-media-replace"); ?></h2>
 
 	<?php
