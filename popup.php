@@ -54,7 +54,7 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 		<p><?php echo __("Select media replacement type:", "enable-media-replace"); ?></p>
 
 		<label for="replace_type_1"><input CHECKED id="replace_type_1" type="radio" name="replace_type" value="replace"> <?php echo __("Just replace the file", "enable-media-replace"); ?></label>
-		<p class="howto"><?php printf( __("Note: This option requires you to upload a file of the same type (%1$s) as the one you are replacing. The name of the attachment will stay the same (%2$s) no matter what the file you upload is called.", "enable-media-replace"), $current_filetype, $current_filename ); ?></p>
+		<p class="howto"><?php printf( __("Note: This option requires you to upload a file of the same type (%s) as the one you are replacing. The name of the attachment will stay the same (%s) no matter what the file you upload is called.", "enable-media-replace"), $current_filetype, $current_filename ); ?></p>
 
 		<?php if ( apply_filters( 'emr_enable_replace_and_search', true ) ) : ?>
 		<label for="replace_type_2"><input id="replace_type_2" type="radio" name="replace_type" value="replace_and_search"> <?php echo __("Replace the file, use new file name and update all links", "enable-media-replace"); ?></label>
