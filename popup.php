@@ -42,7 +42,7 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 		#wp_nonce_field('enable-media-replace');
 	?>
 		<input type="hidden" name="ID" value="<?php echo (int) $_GET["attachment_id"]; ?>" />
-		<div id="message" class="updated fade"><p><?php printf( __('NOTE: You are about to replace the media file "%s". There is no undo. Think about it!', "enable-media-replace"), $current_filename ); ?></p></div>
+		<div id="message" class="updated notice notice-success is-dismissible"><p><?php printf( __('NOTE: You are about to replace the media file "%s". There is no undo. Think about it!', "enable-media-replace"), $current_filename ); ?></p></div>
 
 		<p><?php echo __("Choose a file to upload from your computer", "enable-media-replace"); ?></p>
 
