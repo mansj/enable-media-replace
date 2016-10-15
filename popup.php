@@ -26,7 +26,7 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 
 ?>
 <div class="wrap">
-	<h2><?php echo __("Replace Media Upload", "enable-media-replace"); ?></h2>
+	<h1><?php echo __("Replace Media Upload", "enable-media-replace"); ?></h1>
 
 	<?php
 	$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&noheader=true&action=media_replace_upload&attachment_id=" . (int) $_GET["attachment_id"]);
