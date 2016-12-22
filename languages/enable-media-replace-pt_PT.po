@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-KeywordsList: __;_e\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.11\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: ../enable-media-replace.php:40 ../enable-media-replace.php:79
 #: ../enable-media-replace.php:120
 msgid "Replace media"
-msgstr "Substituir media"
+msgstr "Substituir multimédia"
 
 #: ../enable-media-replace.php:79
 msgid "Upload a new file"
@@ -42,11 +42,11 @@ msgstr "Não tem permissão para carregar ficheiros."
 
 #: ../popup.php:30
 msgid "Replace Media Upload"
-msgstr "Carregar substituição de media"
+msgstr "Carregar substituição de multimédia"
 
 #: ../popup.php:46
 msgid "NOTE: You are about to replace the media file"
-msgstr "NOTA: Irá substituir o ficheiro de media"
+msgstr "NOTA: Está prestes a substituir o ficheiro multimédia"
 
 #: ../popup.php:46
 msgid "There is no undo. Think about it!"
@@ -58,7 +58,7 @@ msgstr "Escolher um ficheiro para carregar a partir do computador"
 
 #: ../popup.php:55
 msgid "Select media replacement type:"
-msgstr "Seleccione o tipo de substituição de media"
+msgstr "Seleccione o tipo de substituição de multimédia:"
 
 #: ../popup.php:57
 msgid "Just replace the file"
