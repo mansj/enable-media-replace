@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enable-media-replace\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-16 16:33-0000\n"
+"POT-Creation-Date: 2017-02-10 08:32+0000\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Pedro Mendonça <ped.gaspar@gmail.com>\n"
 "Language-Team: Pedro Mendonça <ped.gaspar@gmail.com>\n"
@@ -18,21 +18,21 @@ msgstr ""
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
-#: ../enable-media-replace.php:40 ../enable-media-replace.php:79
-#: ../enable-media-replace.php:120
+#: ../enable-media-replace.php:38 ../enable-media-replace.php:64
+#: ../enable-media-replace.php:105
 msgid "Replace media"
 msgstr "Substituir multimédia"
 
-#: ../enable-media-replace.php:79
+#: ../enable-media-replace.php:64
 msgid "Upload a new file"
 msgstr "Carregar novo ficheiro"
 
-#: ../enable-media-replace.php:79
+#: ../enable-media-replace.php:64
 msgid "To replace the current file, click the link and upload a replacement."
 msgstr ""
 "Para subtituir o ficheiro actual, clique na ligação e carregue um substituto."
 
-#: ../enable-media-replace.php:161
+#: ../enable-media-replace.php:156
 msgid "Revised"
 msgstr "Revisto"
 
@@ -40,64 +40,61 @@ msgstr "Revisto"
 msgid "You do not have permission to upload files."
 msgstr "Não tem permissão para carregar ficheiros."
 
-#: ../popup.php:30
+#: ../popup.php:29
 msgid "Replace Media Upload"
-msgstr "Carregar substituição de multimédia"
+msgstr "Carregar multimédia de substituição"
 
-#: ../popup.php:46
-msgid "NOTE: You are about to replace the media file"
-msgstr "NOTA: Está prestes a substituir o ficheiro multimédia"
+#: ../popup.php:45
+#, php-format
+msgid ""
+"NOTE: You are about to replace the media file \"%s\". There is no undo. "
+"Think about it!"
+msgstr ""
+"NOTA: Está prestes a substituir o ficheiro multimédia \"%s\". Não será "
+"possível voltar a trás!"
 
-#: ../popup.php:46
-msgid "There is no undo. Think about it!"
-msgstr "Não será possível voltar a trás!"
-
-#: ../popup.php:48
+#: ../popup.php:47
 msgid "Choose a file to upload from your computer"
 msgstr "Escolher um ficheiro para carregar a partir do computador"
 
-#: ../popup.php:55
+#: ../popup.php:54
 msgid "Select media replacement type:"
 msgstr "Seleccione o tipo de substituição de multimédia:"
 
-#: ../popup.php:57
+#: ../popup.php:56
 msgid "Just replace the file"
 msgstr "Apenas substituir o ficheiro"
 
-#: ../popup.php:58
-msgid "Note: This option requires you to upload a file of the same type ("
-msgstr "Nota: Esta opção requer o carregamento de um ficheiro do mesmo tipo ("
-
-#: ../popup.php:58
+#: ../popup.php:57
+#, php-format
 msgid ""
-") as the one you are replacing. The name of the attachment will stay the "
-"same ("
-msgstr ") daquele a substituir. O nome do ficheiro permanecerá o mesmo ("
+"Note: This option requires you to upload a file of the same type (%s) as the "
+"one you are replacing. The name of the attachment will stay the same (%s) no "
+"matter what the file you upload is called."
+msgstr ""
+"Nota: Esta opção requer o carregamento de um ficheiro do mesmo tipo (%s) "
+"daquele a substituir. O nome do ficheiro permanecerá o mesmo (%s), "
+"independentemente do nome do ficheiro carregado."
 
-#: ../popup.php:58
-msgid ") no matter what the file you upload is called."
-msgstr "), independentemente do nome do ficheiro carregado."
-
-#: ../popup.php:61
+#: ../popup.php:60
 msgid "Replace the file, use new file name and update all links"
 msgstr ""
 "Substituir o ficheiro, usar o novo nome de ficheiro e actualizar todas as "
 "ligações"
 
-#: ../popup.php:62
+#: ../popup.php:61
+#, php-format
 msgid ""
 "Note: If you check this option, the name and type of the file you are about "
-"to upload will replace the old file. All links pointing to the current file ("
+"to upload will replace the old file. All links pointing to the current file "
+"(%s) will be updated to point to the new file name."
 msgstr ""
 "Nota: Se seleccionar esta opção, o nome e tipo do ficheiro que está prestes "
 "a carregar irá substituir os do ficheiro antigo. Todas as ligações que "
-"referenciam o ficheiro actual ("
+"referenciam o ficheiro actual (%s) serão actualizadas de modo a referenciar "
+"o novo nome de ficheiro."
 
 #: ../popup.php:62
-msgid ") will be updated to point to the new file name."
-msgstr ") serão actualizadas de forma a referenciar o novo nome de ficheiro."
-
-#: ../popup.php:63
 msgid ""
 "Please note that if you upload a new image, only embeds/links of the "
 "original size image will be replaced in your posts."
@@ -106,11 +103,11 @@ msgstr ""
 "imagens incorporadas e ligações com o tamanho original serão substituídas "
 "nos seus artigos."
 
-#: ../popup.php:68
+#: ../popup.php:67
 msgid "Upload"
 msgstr "Carregar"
 
-#: ../popup.php:68
+#: ../popup.php:67
 msgid "Cancel"
 msgstr "Cancelar"
 
