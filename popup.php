@@ -26,8 +26,7 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 
 ?>
 <div class="wrap">
-		<div id="icon-upload" class="icon32"><br /></div>
-	<h2><?php echo __("Replace Media Upload", "enable-media-replace"); ?></h2>
+	<h1><?php echo __("Replace Media Upload", "enable-media-replace"); ?></h1>
 
 	<?php
 	$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&noheader=true&action=media_replace_upload&attachment_id=" . (int) $_GET["attachment_id"]);
@@ -43,7 +42,7 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 		#wp_nonce_field('enable-media-replace');
 	?>
 		<input type="hidden" name="ID" value="<?php echo (int) $_GET["attachment_id"]; ?>" />
-		<div id="message" class="updated fade"><p><?php echo __("NOTE: You are about to replace the media file", "enable-media-replace"); ?> "<?php echo $current_filename?>". <?php echo __("There is no undo. Think about it!", "enable-media-replace"); ?></p></div>
+		<div id="message" class="updated notice notice-success is-dismissible"><p><?php printf( __('NOTE: You are about to replace the media file "%s". There is no undo. Think about it!', "enable-media-replace"), $current_filename ); ?></p></div>
 
 		<p><?php echo __("Choose a file to upload from your computer", "enable-media-replace"); ?></p>
 
@@ -55,11 +54,11 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 		<p><?php echo __("Select media replacement type:", "enable-media-replace"); ?></p>
 
 		<label for="replace_type_1"><input CHECKED id="replace_type_1" type="radio" name="replace_type" value="replace"> <?php echo __("Just replace the file", "enable-media-replace"); ?></label>
-		<p class="howto"><?php echo __("Note: This option requires you to upload a file of the same type (", "enable-media-replace"); ?><?php echo $current_filetype; ?><?php echo __(") as the one you are replacing. The name of the attachment will stay the same (", "enable-media-replace"); ?><?php echo $current_filename; ?><?php echo __(") no matter what the file you upload is called.", "enable-media-replace"); ?></p>
+		<p class="howto"><?php printf( __("Note: This option requires you to upload a file of the same type (%s) as the one you are replacing. The name of the attachment will stay the same (%s) no matter what the file you upload is called.", "enable-media-replace"), $current_filetype, $current_filename ); ?></p>
 
 		<?php if ( apply_filters( 'emr_enable_replace_and_search', true ) ) : ?>
 		<label for="replace_type_2"><input id="replace_type_2" type="radio" name="replace_type" value="replace_and_search"> <?php echo __("Replace the file, use new file name and update all links", "enable-media-replace"); ?></label>
-		<p class="howto"><?php echo __("Note: If you check this option, the name and type of the file you are about to upload will replace the old file. All links pointing to the current file (", "enable-media-replace"); ?><?php echo $current_filename; ?><?php echo __(") will be updated to point to the new file name.", "enable-media-replace"); ?></p>
+		<p class="howto"><?php printf( __("Note: If you check this option, the name and type of the file you are about to upload will replace the old file. All links pointing to the current file (%s) will be updated to point to the new file name.", "enable-media-replace"), $current_filename ); ?></p>
 		<p class="howto"><?php echo __("Please note that if you upload a new image, only embeds/links of the original size image will be replaced in your posts.", "enable-media-replace"); ?></p>
 		<?php endif; ?>
 	<?php else : ?>

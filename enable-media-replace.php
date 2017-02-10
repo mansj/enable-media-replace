@@ -102,7 +102,7 @@ function add_media_action( $actions, $post) {
 	}
 	$link = "href=\"$editurl\"";
 
-	$newaction['adddata'] = '<a ' . $link . ' title="' . __("Replace media", "enable-media-replace") . '" rel="permalink">' . __("Replace media", "enable-media-replace") . '</a>';
+	$newaction['adddata'] = '<a ' . $link . ' aria-label="' . __("Replace media", "enable-media-replace") . '" rel="permalink">' . __("Replace media", "enable-media-replace") . '</a>';
 	return array_merge($actions,$newaction);
 }
 
@@ -158,6 +158,3 @@ function ua_admin_date_replaced_media_on_edit_media_screen() {
 	<?php
 }
 add_action( 'attachment_submitbox_misc_actions', 'ua_admin_date_replaced_media_on_edit_media_screen', 91 );
-
-
-?>
