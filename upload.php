@@ -130,7 +130,11 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 
 		// Update database file name
 		$sql = $wpdb->prepare(
-			"UPDATE $table_name SET post_title = '$new_filetitle', post_name = '$new_filetitle', guid = '$new_guid', post_mime_type = '$new_filetype' WHERE ID = %d;",
+			"UPDATE $table_name SET post_title = %s, post_name = %s, guid = %s, post_mime_type = %s WHERE ID = %d;",
+			$new_filetitle,
+			$new_filetitle,
+			$new_guid,
+			$new_filetype,
 			(int) $_POST["ID"]
 		);
 		$wpdb->query($sql);
@@ -149,7 +153,8 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		// Make new postmeta _wp_attached_file
 		$new_meta_name = str_replace($current_filename, $new_filename, $old_meta_name);
 		$sql = $wpdb->prepare(
-			"UPDATE $postmeta_table_name SET meta_value = '$new_meta_name' WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
+			"UPDATE $postmeta_table_name SET meta_value = %s WHERE meta_key = '_wp_attached_file' AND post_id = %d;",
+			$new_meta_name,
 			(int) $_POST["ID"]
 		);
 		$wpdb->query($sql);
@@ -164,15 +169,16 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		);
 
 		$rs = $wpdb->get_results($sql, ARRAY_A);
-		
+
 		foreach($rs AS $rows) {
 
 			// replace old guid with new guid
 			$post_content = $rows["post_content"];
-			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
+			$post_content = str_replace($current_guid, $new_guid, $post_content);
 
 			$sql = $wpdb->prepare(
-				"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+				"UPDATE $table_name SET post_content = %s WHERE ID = %d;",
+				$post_content,
 				$rows["ID"]
 			);
 
@@ -184,7 +190,11 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 
 	}
 
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/post.php?post={$_POST["ID"]}&action=edit&message=1";
+	$returnurl = add_query_arg( array(
+		'post'		=> (int) $_POST["ID"],
+		'action'	=> 'edit',
+		'message'	=> 1,
+	), admin_url('post.php') );
 	
 	// Execute hook actions - thanks rubious for the suggestion!
 	if (isset($new_guid)) { do_action("enable-media-replace-upload-done", ($new_guid ? $new_guid : $current_guid)); }
@@ -192,7 +202,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 } else {
 	//TODO Better error handling when no file is selected.
 	//For now just go back to media management
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php";
+	$returnurl = admin_url( 'upload.php' );
 }
 
 if (FORCE_SSL_ADMIN) {

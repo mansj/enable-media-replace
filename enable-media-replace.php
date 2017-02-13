@@ -53,7 +53,12 @@ function enable_media_replace_init() {
  */
 function enable_media_replace( $form_fields, $post ) {
 
-	$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&action=media_replace&attachment_id=" . $post->ID);
+	$url = add_query_arg( array(
+			'page'			=> 'enable-media-replace/enable-media-replace.php',
+			'action'		=> 'media_replace',
+			'attachment_id'	=> $post->ID,
+		), admin_url( "upload.php" ) );
+
 	$action = "media_replace";
   	$editurl = wp_nonce_url( $url, $action );
 
@@ -93,7 +98,12 @@ function emr_options() {
  * Enables linking to EMR straight from the media library
 */
 function add_media_action( $actions, $post) {
-	$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&action=media_replace&attachment_id=" . $post->ID);
+	$url = add_query_arg( array(
+			'page'			=> 'enable-media-replace/enable-media-replace.php',
+			'action'		=> 'media_replace',
+			'attachment_id'	=> $post->ID,
+		), admin_url( "upload.php" ) );
+
 	$action = "media_replace";
   	$editurl = wp_nonce_url( $url, $action );
 
