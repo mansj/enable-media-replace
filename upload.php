@@ -184,7 +184,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 
 	}
 
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/post.php?post={$_POST["ID"]}&action=edit&message=1";
+	$returnurl = admin_url( 'post.php?post=' . $_POST["ID"] . '&action=edit&message=1' );
 	
 	// Execute hook actions - thanks rubious for the suggestion!
 	if (isset($new_guid)) { do_action("enable-media-replace-upload-done", ($new_guid ? $new_guid : $current_guid)); }
@@ -192,7 +192,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 } else {
 	//TODO Better error handling when no file is selected.
 	//For now just go back to media management
-	$returnurl = get_bloginfo("wpurl") . "/wp-admin/upload.php";
+	$returnurl = admin_url( 'upload.php' );
 }
 
 if (FORCE_SSL_ADMIN) {
