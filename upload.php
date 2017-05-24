@@ -115,7 +115,8 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		emr_delete_current_files($current_file);
 
 		// Massage new filename to adhere to WordPress standards
-		$new_filename= wp_unique_filename( $current_path, $new_filename );
+		$new_filename = wp_unique_filename( $current_path, $new_filename );
+		$new_filename = apply_filters( 'emr_unique_filename', $new_filename, $current_path, (int) $_POST['ID'] );
 
 		// Move new file to old location, new name
 		$new_file = $current_path . "/" . $new_filename;
