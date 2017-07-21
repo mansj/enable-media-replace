@@ -7,7 +7,13 @@ global $wpdb;
 $table_name = $wpdb->prefix . "posts";
 $postmeta_table_name = $wpdb->prefix . "postmeta";
 
-function emr_delete_current_files($current_file) {
+/**
+ * Delete a media file and its thumbnails.
+ *
+ * @param string     $current_file
+ * @param array|null $metadta
+ */
+function emr_delete_current_files( $current_file, $metadta = null ) {
 	// Delete old file
 
 	// Find path of current file
@@ -35,7 +41,10 @@ function emr_delete_current_files($current_file) {
 	if (in_array($suffix, $imgAr)) { 
 		// It's a png/gif/jpg based on file name
 		// Get thumbnail filenames from metadata
-		$metadata = wp_get_attachment_metadata($_POST["ID"]);
+		if ( empty( $metadata ) ) {
+			$metadata = wp_get_attachment_metadata( $_POST["ID"] );
+		}
+
 		if (is_array($metadata)) { // Added fix for error messages when there is no metadata (but WHY would there not be? I don't know…)
 			foreach($metadata["sizes"] AS $thissize) {
 				// Get all filenames and do an unlink() on each one;
@@ -58,6 +67,122 @@ function emr_delete_current_files($current_file) {
 
 }
 
+/**
+ * Maybe remove query string from URL.
+ *
+ * @param string $url
+ *
+ * @return string
+ */
+function emr_maybe_remove_query_string( $url ) {
+	$parts = explode( '?', $url );
+
+	return reset( $parts );
+}
+
+/**
+ * Remove scheme from URL.
+ *
+ * @param string $url
+ *
+ * @return string
+ */
+function emr_remove_scheme( $url ) {
+	return preg_replace( '/^(?:http|https):/', '', $url );
+}
+
+/**
+ * Remove size from filename (image[-100x100].jpeg).
+ *
+ * @param string $url
+ * @param bool   $remove_extension
+ *
+ * @return string
+ */
+function emr_remove_size_from_filename( $url, $remove_extension = false ) {
+	$url = preg_replace( '/^(\S+)-[0-9]{1,4}x[0-9]{1,4}(\.[a-zA-Z0-9\.]{2,})?/', '$1$2', $url );
+
+	if ( $remove_extension ) {
+		$ext = pathinfo( $url, PATHINFO_EXTENSION );
+		$url = str_replace( ".$ext", '', $url );
+	}
+
+	return $url;
+}
+
+/**
+ * Strip an image URL down to bare minimum for matching.
+ *
+ * @param string $url
+ *
+ * @return string
+ */
+function emr_get_match_url( $url ) {
+	$url = emr_remove_scheme( $url );
+	$url = emr_maybe_remove_query_string( $url );
+	$url = emr_remove_size_from_filename( $url, true );
+
+	return $url;
+}
+
+/**
+ * Build an array of search or replace URLs for given attachment GUID and its metadata.
+ *
+ * @param string $guid
+ * @param array  $metadata
+ *
+ * @return array
+ */
+function emr_get_file_urls( $guid, $metadata ) {
+	$urls = array();
+
+	$guid = emr_remove_scheme( $guid );
+
+	$urls['guid'] = $guid;
+
+	if ( empty( $metadata ) ) {
+		return $urls;
+	}
+
+	$base_url = dirname( $guid );
+
+	if ( ! empty( $metadata['file'] ) ) {
+		$urls['file'] = trailingslashit( $base_url ) . wp_basename( $metadata['file'] );
+	}
+
+	if ( ! empty( $metadata['sizes'] ) ) {
+		foreach ( $metadata['sizes'] as $key => $value ) {
+			$urls[ $key ] = trailingslashit( $base_url ) . wp_basename( $value['file'] );
+		}
+	}
+
+	return $urls;
+}
+
+/**
+ * Ensure new search URLs cover known sizes for old attachment.
+ * Falls back to full URL if size not covered (srcset or width/height attributes should compensate).
+ *
+ * @param array $old
+ * @param array $new
+ *
+ * @return array
+ */
+function emr_normalize_file_urls( $old, $new ) {
+	$result = array();
+
+	if ( empty( $new['guid'] ) ) {
+		return $result;
+	}
+
+	$guid = $new['guid'];
+
+	foreach ( $old as $key => $value ) {
+		$result[ $key ] = empty( $new[ $key ] ) ? $guid : $new[ $key ];
+	}
+
+	return $result;
+}
 
 // Get old guid and filetype from DB
 $sql = "SELECT guid, post_mime_type FROM $table_name WHERE ID = '" . (int) $_POST["ID"] . "'";
@@ -71,6 +196,7 @@ $current_file = get_attached_file((int) $_POST["ID"], apply_filters( 'emr_unfilt
 $current_path = substr($current_file, 0, (strrpos($current_file, "/")));
 $current_file = str_replace("//", "/", $current_file);
 $current_filename = basename($current_file);
+$current_metadata = wp_get_attachment_metadata( $_POST["ID"] );
 
 $replace_type = $_POST["replace_type"];
 // We have two types: replace / replace_and_search
@@ -96,7 +222,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		// Drop-in replace and we don't even care if you uploaded something that is the wrong file-type.
 		// That's your own fault, because we warned you!
 
-		emr_delete_current_files($current_file);
+		emr_delete_current_files( $current_file, $current_metadata );
 
 		// Move new file to old location/name
 		move_uploaded_file($_FILES["userfile"]["tmp_name"], $current_file);
@@ -112,7 +238,7 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 	} elseif ( 'replace_and_search' == $replace_type && apply_filters( 'emr_enable_replace_and_search', true ) ) {
 		// Replace file, replace file name, update meta data, replace links pointing to old file name
 
-		emr_delete_current_files($current_file);
+		emr_delete_current_files( $current_file, $current_metadata );
 
 		// Massage new filename to adhere to WordPress standards
 		$new_filename = wp_unique_filename( $current_path, $new_filename );
@@ -156,33 +282,41 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		$wpdb->query($sql);
 
 		// Make thumb and/or update metadata
-		wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $new_file) );
+		$new_metadata = wp_generate_attachment_metadata( (int) $_POST["ID"], $new_file );
+		wp_update_attachment_metadata( (int) $_POST["ID"], $new_metadata );
 
 		// Search-and-replace filename in post database
+		$current_base_url = emr_get_match_url( $current_guid );
+
 		$sql = $wpdb->prepare(
 			"SELECT ID, post_content FROM $table_name WHERE post_content LIKE %s;",
-			'%' . $current_guid . '%'
+			'%' . $current_base_url . '%'
 		);
 
-		$rs = $wpdb->get_results($sql, ARRAY_A);
-		
-		foreach($rs AS $rows) {
+		$rs = $wpdb->get_results( $sql, ARRAY_A );
 
-			// replace old guid with new guid
-			$post_content = $rows["post_content"];
-			$post_content = addslashes(str_replace($current_guid, $new_guid, $post_content));
+		if ( ! empty( $rs ) ) {
+			$search_urls  = emr_get_file_urls( $current_guid, $current_metadata );
+			$replace_urls = emr_get_file_urls( $new_guid, $new_metadata );
+			$replace_urls = emr_normalize_file_urls( $search_urls, $replace_urls );
 
-			$sql = $wpdb->prepare(
-				"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
-				$rows["ID"]
-			);
+			foreach ( $rs AS $rows ) {
 
-			$wpdb->query($sql);
+				// replace old URLs with new URLs.
+				$post_content = $rows["post_content"];
+				$post_content = addslashes( str_replace( $search_urls, $replace_urls, $post_content ) );
+
+				$sql = $wpdb->prepare(
+					"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+					$rows["ID"]
+				);
+
+				$wpdb->query( $sql );
+			}
 		}
-		
-		// Trigger possible updates on CDN and other plugins 
-		update_attached_file( (int) $_POST["ID"], $new_file);
 
+		// Trigger possible updates on CDN and other plugins 
+		update_attached_file( (int) $_POST["ID"], $new_file );
 	}
 
 	$returnurl = admin_url("/post.php?post={$_POST["ID"]}&action=edit&message=1");
