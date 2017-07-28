@@ -37,6 +37,9 @@ If you want more control over the format used to display the time, you can use t
 
 == Changelog ==
 
+= 3.1.1 =
+* Fixed bug introduced in an earlier version, preventing the updating of URLs on pages/posts if the link did not contain the domain name
+
 = 3.1 =
 * Got rid of some pesky old code, and added some better filtering options, thanks to GitHub users speerface, aaemnnosttv, and ururk
 * Brand new, shiny code to replace other image sizes in embeded media, thanks to GitHub user ianmjones!

@@ -117,13 +117,21 @@ function emr_remove_size_from_filename( $url, $remove_extension = false ) {
  *
  * @return string
  */
-function emr_get_match_url( $url ) {
-	$url = emr_remove_scheme( $url );
-	$url = emr_maybe_remove_query_string( $url );
-	$url = emr_remove_size_from_filename( $url, true );
+function emr_get_match_url($url) {
+	$url = emr_remove_scheme($url);
+	$url = emr_maybe_remove_query_string($url);
+	$url = emr_remove_size_from_filename($url, true);
+	$url = emr_remove_domain_from_filename($url);
 
 	return $url;
 }
+
+
+function emr_remove_domain_from_filename($url) {
+	// Holding place for possible future function
+	$url = str_replace(emr_remove_scheme(get_bloginfo('url')), '', $url);
+	return $url;
+	}
 
 /**
  * Build an array of search or replace URLs for given attachment GUID and its metadata.
@@ -137,6 +145,7 @@ function emr_get_file_urls( $guid, $metadata ) {
 	$urls = array();
 
 	$guid = emr_remove_scheme( $guid );
+	$guid= emr_remove_domain_from_filename($guid);
 
 	$urls['guid'] = $guid;
 
@@ -289,19 +298,26 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		$current_base_url = emr_get_match_url( $current_guid );
 
 		$sql = $wpdb->prepare(
-			"SELECT ID, post_content FROM $table_name WHERE post_content LIKE %s;",
+			"SELECT ID, post_content FROM $table_name WHERE post_status = 'publish' AND post_content LIKE %s;",
 			'%' . $current_base_url . '%'
 		);
-
+		
+		
 		$rs = $wpdb->get_results( $sql, ARRAY_A );
 
+		$number_of_updates = 0;
+		
+		
 		if ( ! empty( $rs ) ) {
 			$search_urls  = emr_get_file_urls( $current_guid, $current_metadata );
 			$replace_urls = emr_get_file_urls( $new_guid, $new_metadata );
 			$replace_urls = emr_normalize_file_urls( $search_urls, $replace_urls );
 
+	
 			foreach ( $rs AS $rows ) {
-
+				
+				$number_of_updates = $number_of_updates + 1;
+				
 				// replace old URLs with new URLs.
 				$post_content = $rows["post_content"];
 				$post_content = addslashes( str_replace( $search_urls, $replace_urls, $post_content ) );
@@ -318,6 +334,8 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		// Trigger possible updates on CDN and other plugins 
 		update_attached_file( (int) $_POST["ID"], $new_file );
 	}
+	
+	#echo "Updated: " . $number_of_updates;
 
 	$returnurl = admin_url("/post.php?post={$_POST["ID"]}&action=edit&message=1");
 	
