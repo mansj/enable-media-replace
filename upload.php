@@ -193,6 +193,17 @@ function emr_normalize_file_urls( $old, $new ) {
 	return $result;
 }
 
+function emr_update_modified_dates( $attachment_id ) {
+    $attachment = array(
+        'ID' => $attachment_id,
+        'post_modified_gmt' => date("Y-m-d h:m:i"),
+        'post_modified' => current_time('mysql'),
+    );
+
+    // Update the post modified dates into the database
+    wp_update_post( $attachment );
+}
+
 // Get old guid and filetype from DB
 $sql = "SELECT guid, post_mime_type FROM $table_name WHERE ID = '" . (int) $_POST["ID"] . "'";
 list($current_filename, $current_filetype) = $wpdb->get_row($sql, ARRAY_N);
@@ -241,6 +252,9 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 
 		// Make thumb and/or update metadata
 		wp_update_attachment_metadata( (int) $_POST["ID"], wp_generate_attachment_metadata( (int) $_POST["ID"], $current_file ) );
+
+		// Update the attachment modified dates
+        emr_update_modified_dates( (int) $_POST["ID"] );
 
 		// Trigger possible updates on CDN and other plugins 
 		update_attached_file( (int) $_POST["ID"], $current_file);
@@ -293,6 +307,9 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 		// Make thumb and/or update metadata
 		$new_metadata = wp_generate_attachment_metadata( (int) $_POST["ID"], $new_file );
 		wp_update_attachment_metadata( (int) $_POST["ID"], $new_metadata );
+
+        // Update the attachment modified dates
+        emr_update_modified_dates( (int) $_POST["ID"] );
 
 		// Search-and-replace filename in post database
 		$current_base_url = emr_get_match_url( $current_guid );
