@@ -44,6 +44,29 @@ $current_filename = substr($current_filename, (strrpos($current_filename, "/") +
 		<input type="hidden" name="ID" value="<?php echo (int) $_GET["attachment_id"]; ?>" />
 		<div id="message" class="updated notice notice-success is-dismissible"><p><?php printf( __('NOTE: You are about to replace the media file "%s". There is no undo. Think about it!', "enable-media-replace"), $current_filename ); ?></p></div>
 
+
+		<div style="background: #fff;width: 250px;min-height: 270px;border: 1px solid #ccc;float: right;padding: 15px;position: relative;margin: 0 0 10px 10px;">
+			<h3 class="" style="margin-top: 0;text-align: center;">
+				<a href="https://shortpixel.com/h/af/VKG6LYN28044" target="_blank">
+					<?php _e("Optimize your images with ShortPixel, get +50% credits!", "enable-media-replace"); ?>
+				</a>
+			</h3>
+			<div class="" style="text-align: center;">
+				<a href="https://shortpixel.com/h/af/VKG6LYN28044" target="_blank">
+					<img src="https://optimizingmattersblog.files.wordpress.com/2016/10/shortpixel.png">
+				</a>
+			</div>
+			<div class="" style="margin-bottom: 10px;">
+				<?php _e("Get more Google love by compressing your site's images! Check out how much ShortPixel can save your site and get +50% credits when signing up as an Enable Media Replace user! Forever!", "enable-media-replace"); ?>
+			</div>
+			<div class=""><div style="text-align: right;">
+					<a class="button button-secondary" href="https://shortpixel.com/h/af/VKG6LYN28044" target="_blank">
+						<?php _e("More info", "enable-media-replace"); ?></p>
+					</a>
+				</div>
+			</div>
+		</div>
+
 		<p><?php echo __("Choose a file to upload from your computer", "enable-media-replace"); ?></p>
 
 		<input type="file" name="userfile" />
