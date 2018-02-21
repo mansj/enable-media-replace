@@ -39,6 +39,7 @@ If you want more control over the format used to display the time, you can use t
 
 = 3.2 =
 * Tested with WP 4.9.4
+* Added Shortpixel link in replace media screen
 
 = 3.1.1 =
 * Fixed bug introduced in an earlier version, preventing the updating of URLs on pages/posts if the link did not contain the domain name

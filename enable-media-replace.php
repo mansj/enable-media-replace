@@ -28,7 +28,7 @@ add_action('admin_menu', 'emr_menu');
 add_filter('attachment_fields_to_edit', 'enable_media_replace', 10, 2);
 add_filter('media_row_actions', 'add_media_action', 10, 2);
 
-add_action('admin_notices', 'emr_display_notices');
+//add_action('admin_notices', 'emr_display_notices');
 add_action('wp_ajax_emr_dismiss_notices', 'emr_dismiss_notices');
 
 add_shortcode('file_modified', 'emr_get_modified_date');
@@ -167,9 +167,11 @@ add_action( 'attachment_submitbox_misc_actions', 'ua_admin_date_replaced_media_o
 -----------------------------------------------------------------------------------------------------------*/
 
 function emr_display_notices() {
-	if(!get_option( 'emr_news') && !is_plugin_active('shortpixel-image-optimiser/wp-shortpixel.php')
-	   && current_action() != "media_page_enable-media-replace/enable-media-replace") {
-		require_once( str_replace("enable-media-replace.php", "notice.php", __FILE__) );
+	if(!get_option( 'emr_news') && !is_plugin_active('shortpixel-image-optimiser/wp-shortpixel.php')) {
+		$screen = get_current_screen();
+		if($screen->id != "media_page_enable-media-replace/enable-media-replace") {
+			require_once( str_replace("enable-media-replace.php", "notice.php", __FILE__) );
+		}
 	}
 }
 
