@@ -3,7 +3,7 @@
 Plugin Name: Enable Media Replace
 Plugin URI: http://www.mansjonasson.se/enable-media-replace
 Description: Enable replacing media files by uploading a new file in the "Edit Media" section of the WordPress Media Library.
-Version: 3.2
+Version: 3.2.1
 Author: Måns Jonasson
 Author URI: http://www.mansjonasson.se
 
@@ -27,9 +27,6 @@ add_action('admin_init', 'enable_media_replace_init');
 add_action('admin_menu', 'emr_menu');
 add_filter('attachment_fields_to_edit', 'enable_media_replace', 10, 2);
 add_filter('media_row_actions', 'add_media_action', 10, 2);
-
-//add_action('admin_notices', 'emr_display_notices');
-add_action('wp_ajax_emr_dismiss_notices', 'emr_dismiss_notices');
 
 add_shortcode('file_modified', 'emr_get_modified_date');
 
@@ -161,21 +158,3 @@ function ua_admin_date_replaced_media_on_edit_media_screen() {
 	<?php
 }
 add_action( 'attachment_submitbox_misc_actions', 'ua_admin_date_replaced_media_on_edit_media_screen', 91 );
-
-/*----------------------------------------------------------------------------------------------------------
-	Display/dismiss admin notices if needed
------------------------------------------------------------------------------------------------------------*/
-
-function emr_display_notices() {
-	if(!get_option( 'emr_news') && !is_plugin_active('shortpixel-image-optimiser/wp-shortpixel.php')) {
-		$screen = get_current_screen();
-		if($screen->id != "media_page_enable-media-replace/enable-media-replace") {
-			require_once( str_replace("enable-media-replace.php", "notice.php", __FILE__) );
-		}
-	}
-}
-
-function emr_dismiss_notices() {
-	update_option( 'emr_news', true);
-	return json_encode(array("Status" => 0));
-}

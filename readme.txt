@@ -37,6 +37,10 @@ If you want more control over the format used to display the time, you can use t
 
 == Changelog ==
 
+= 3.2.1 =
+* Bugfix, typo made metadata changes (thanks GitHub user icecandy!)
+* Removed Shortpixel links and images
+
 = 3.2 =
 * Tested with WP 4.9.4
 * Added Shortpixel link in replace media screen
