@@ -302,32 +302,65 @@ if (is_uploaded_file($_FILES["userfile"]["tmp_name"])) {
 			'%' . $current_base_url . '%'
 		);
 
+		$content_rs = $wpdb->get_results( $sql, ARRAY_A );
 
-		$rs = $wpdb->get_results( $sql, ARRAY_A );
+		$sql = $wpdb->prepare(
+			"SELECT meta_id, meta_value FROM $postmeta_table_name WHERE meta_value LIKE %s;",
+			'%' . $current_base_url . '%'
+		);
+
+		$meta_rs = $wpdb->get_results( $sql, ARRAY_A );
 
 		$number_of_updates = 0;
 
+		if ( ! empty( $content_rs ) || ! empty( $meta_rs ) ) {
 
-		if ( ! empty( $rs ) ) {
 			$search_urls  = emr_get_file_urls( $current_guid, $current_metadata );
 			$replace_urls = emr_get_file_urls( $new_guid, $new_metadata );
 			$replace_urls = emr_normalize_file_urls( $search_urls, $replace_urls );
 
+			if ( ! empty( $content_rs ) ) {
+				foreach ( $content_rs AS $rows ) {
 
-			foreach ( $rs AS $rows ) {
+					$number_of_updates = $number_of_updates + 1;
 
-				$number_of_updates = $number_of_updates + 1;
+					// replace old URLs with new URLs.
+					$post_content = $rows["post_content"];
+					$post_content = addslashes( str_replace( $search_urls, $replace_urls, $post_content ) );
 
-				// replace old URLs with new URLs.
-				$post_content = $rows["post_content"];
-				$post_content = addslashes( str_replace( $search_urls, $replace_urls, $post_content ) );
+					$sql = $wpdb->prepare(
+						"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
+						$rows["ID"]
+					);
 
-				$sql = $wpdb->prepare(
-					"UPDATE $table_name SET post_content = '$post_content' WHERE ID = %d;",
-					$rows["ID"]
-				);
+					$wpdb->query( $sql );
+				}
+			}
 
-				$wpdb->query( $sql );
+			if ( ! empty( $meta_rs ) ) {
+
+				foreach ( $meta_rs AS $rows ) {
+					$number_of_updates = $number_of_updates + 1;
+
+					// replace old URLs with new URLs.
+					$meta_value = $rows["meta_value"];
+					$meta_value = str_replace( $search_urls, $replace_urls, $meta_value );
+					// Fix string counts for serialized data.
+					if ( is_serialized( $meta_value ) ) {
+						foreach ( $search_urls as $size => $url ) {
+							$meta_value = str_replace(
+								's:' . strlen( site_url( $url ) ) . ':"' . site_url( $replace_urls[ $size ] ) . '";',
+								's:' . strlen( site_url( $replace_urls[ $size ] ) ) . ':"' . site_url( $replace_urls[ $size ] ) . '";',
+								$meta_value
+							);
+						}
+					}
+					$sql = $wpdb->prepare(
+						"UPDATE $postmeta_table_name SET meta_value = '$meta_value' WHERE meta_id = %d;",
+						$rows["meta_id"]
+					);
+					$wpdb->query( $sql );
+				}
 			}
 		}
 
