@@ -1,41 +1,38 @@
 <?php
-/*
-Plugin Name: Enable Media Replace
-Plugin URI: http://www.mansjonasson.se/enable-media-replace
-Description: Enable replacing media files by uploading a new file in the "Edit Media" section of the WordPress Media Library.
-Version: 3.2.1
-Author: Måns Jonasson
-Author URI: http://www.mansjonasson.se
-
-Dual licensed under the MIT and GPL licenses:
-http://www.opensource.org/licenses/mit-license.php
-http://www.gnu.org/licenses/gpl.html
-*/
-
 /**
+ * Plugin Name: Enable Media Replace
+ * Plugin URI: http://www.mansjonasson.se/enable-media-replace
+ * Description: Enable replacing media files by uploading a new file in the "Edit Media" section of the WordPress Media Library.
+ * Version: 3.2.1
+ * Author: Måns Jonasson
+ * Author URI: http://www.mansjonasson.se
+ *
+ * Dual licensed under the MIT and GPL licenses:
+ * http://www.opensource.org/licenses/mit-license.php
+ * http://www.gnu.org/licenses/gpl.html
+ *
  * Main Plugin file
  * Set action hooks and add shortcode
  *
  * @author      Måns Jonasson  <http://www.mansjonasson.se>
  * @copyright   Måns Jonasson 13 sep 2010
- * @package     wordpress
+ * @package     WordPress
  * @subpackage  enable-media-replace
- *
- */
+ **/
 
-add_action('admin_init', 'enable_media_replace_init');
-add_action('admin_menu', 'emr_menu');
-add_filter('attachment_fields_to_edit', 'enable_media_replace', 10, 2);
-add_filter('media_row_actions', 'add_media_action', 10, 2);
+add_action( 'admin_init', 'enable_media_replace_init' );
+add_action( 'admin_menu', 'emr_menu' );
+add_filter( 'attachment_fields_to_edit', 'enable_media_replace', 10, 2 );
+add_filter( 'media_row_actions', 'add_media_action', 10, 2 );
 
-add_shortcode('file_modified', 'emr_get_modified_date');
+add_shortcode( 'file_modified', 'emr_get_modified_date' );
 
 /**
  * Register this file in WordPress so we can call it with a ?page= GET var.
  * To suppress it in the menu we give it an empty menu title.
  */
 function emr_menu() {
-	add_submenu_page(NULL, __("Replace media", "enable-media-replace"), '','upload_files', 'enable-media-replace/enable-media-replace', 'emr_options');
+	add_submenu_page( null, esc_html__( 'Replace media', 'enable-media-replace' ), '', 'upload_files', 'enable-media-replace/enable-media-replace', 'emr_options' );
 }
 
 /**
@@ -48,20 +45,27 @@ function enable_media_replace_init() {
 
 /**
  * Add some new fields to the attachment edit panel.
- * @param array form fields edit panel
- * @return array form fields with enable-media-replace fields added
+ *
+ * @param array  $form_fields form fields edit panel.
+ * @param object $post post object.
+ * @return array $form_fields form fields with enable-media-replace fields added.
  */
 function enable_media_replace( $form_fields, $post ) {
 
-	$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&action=media_replace&attachment_id=" . $post->ID);
-	$action = "media_replace";
-  	$editurl = wp_nonce_url( $url, $action );
+	$url     = admin_url( 'upload.php?page=enable-media-replace/enable-media-replace.php&action=media_replace&attachment_id=' . $post->ID );
+	$action  = 'media_replace';
+	$editurl = wp_nonce_url( $url, $action );
 
-	if (FORCE_SSL_ADMIN) {
-		$editurl = str_replace("http:", "https:", $editurl);
+	if ( FORCE_SSL_ADMIN ) {
+		$editurl = str_replace( 'http:', 'https:', $editurl );
 	}
-	$link = "href=\"$editurl\"";
-	$form_fields["enable-media-replace"] = array("label" => __("Replace media", "enable-media-replace"), "input" => "html", "html" => "<p><a class='button-secondary'$link>" . __("Upload a new file", "enable-media-replace") . "</a></p>", "helps" => __("To replace the current file, click the link and upload a replacement.", "enable-media-replace"));
+	$link                                = 'href="' . $editurl . '"';
+	$form_fields['enable-media-replace'] = array(
+		'label' => esc_html__( 'Replace media', 'enable-media-replace' ),
+		'input' => 'html',
+		'html'  => '<p><a class="button-secondary" ' . $link . '>' . esc_html__( 'Upload a new file', 'enable-media-replace' ) . '</a></p>',
+		'helps' => esc_html__( 'To replace the current file, click the link and upload a replacement.', 'enable-media-replace' ),
+	);
 
 	return $form_fields;
 }
@@ -73,17 +77,17 @@ function enable_media_replace( $form_fields, $post ) {
  */
 function emr_options() {
 
-	if ( isset( $_GET['action'] ) && $_GET['action'] == 'media_replace' ) {
-    	check_admin_referer( 'media_replace' ); // die if invalid or missing nonce
-		if ( array_key_exists("attachment_id", $_GET) && (int) $_GET["attachment_id"] > 0) {
-			include("popup.php");
+	if ( isset( $_GET['action'] ) && $_GET['action'] === 'media_replace' ) {
+		check_admin_referer( 'media_replace' ); // die if invalid or missing nonce.
+		if ( array_key_exists( 'attachment_id', $_GET ) && (int) $_GET['attachment_id'] > 0 ) {
+			include 'popup.php';
 		}
 	}
 
-	if ( isset( $_GET['action'] ) && $_GET['action'] == 'media_replace_upload' ) {
-		$plugin_url =  str_replace("enable-media-replace.php", "", __FILE__);
-    	check_admin_referer( 'media_replace_upload' ); // die if invalid or missing nonce
-		require_once($plugin_url . "upload.php");
+	if ( isset( $_GET['action'] ) && $_GET['action'] === 'media_replace_upload' ) {
+		$plugin_url = str_replace( 'enable-media-replace.php', '', __FILE__ );
+		check_admin_referer( 'media_replace_upload' ); // die if invalid or missing nonce.
+		require_once $plugin_url . 'upload.php';
 	}
 
 }
@@ -91,69 +95,81 @@ function emr_options() {
 /**
  * Function called by filter 'media_row_actions'
  * Enables linking to EMR straight from the media library
-*/
-function add_media_action( $actions, $post) {
-	$url = admin_url( "upload.php?page=enable-media-replace/enable-media-replace.php&action=media_replace&attachment_id=" . $post->ID);
-	$action = "media_replace";
-  	$editurl = wp_nonce_url( $url, $action );
+ *
+ * @param array  $actions actions.
+ * @param object $post post object.
+ * @return array $actions All actions.
+ */
+function add_media_action( $actions, $post ) {
+	$url     = admin_url( 'upload.php?page=enable-media-replace/enable-media-replace.php&action=media_replace&attachment_id=' . $post->ID );
+	$action  = 'media_replace';
+	$editurl = wp_nonce_url( $url, $action );
 
-	if (FORCE_SSL_ADMIN) {
-		$editurl = str_replace("http:", "https:", $editurl);
+	if ( FORCE_SSL_ADMIN ) {
+		$editurl = str_replace( 'http:', 'https:', $editurl );
 	}
-	$link = "href=\"$editurl\"";
+	$link = 'href="' . $editurl . '"';
 
-	$newaction['adddata'] = '<a ' . $link . ' aria-label="' . __("Replace media", "enable-media-replace") . '" rel="permalink">' . __("Replace media", "enable-media-replace") . '</a>';
-	return array_merge($actions,$newaction);
+	$newaction['adddata'] = '<a ' . $link . ' aria-label="' . esc_attr__( 'Replace media', 'enable-media-replace' ) . '" rel="permalink">' . esc_html__( 'Replace media', 'enable-media-replace' ) . '</a>';
+	return array_merge( $actions, $newaction );
 }
 
 /**
  * Shorttag function to show the media file modification date/time.
- * @param array shorttag attributes
+ *
+ * @param array $atts shorttag attributes.
  * @return string content / replacement shorttag
  */
-function emr_get_modified_date($atts) {
-	$id=0;
-	$format= '';
+function emr_get_modified_date( $atts ) {
+	$id     = 0;
+	$format = '';
 
-	extract(shortcode_atts(array(
-		'id' => '',
-		'format' => get_option('date_format') . " " . get_option('time_format'),
-	), $atts));
+	extract( shortcode_atts( array(
+		'id'     => '',
+		'format' => get_option( 'date_format' ) . ' ' . get_option( 'time_format' ),
+	), $atts ) );
 
-	if ($id == '') return false;
+	if ( $id === '' ) {
+		return false;
+	}
 
-    // Get path to file
-	$current_file = get_attached_file($id);
+	// Get path to file.
+	$current_file = get_attached_file( $id );
 
 	if ( ! file_exists( $current_file ) ) {
 		return false;
 	}
 
-	// Get file modification time
-	$filetime = filemtime($current_file);
+	// Get file modification time.
+	$filetime = filemtime( $current_file );
 
 	if ( false !== $filetime ) {
-		// do date conversion
+		// Do date conversion.
 		return date( $format, $filetime );
 	}
 
 	return false;
 }
 
-// Add Last replaced by EMR plugin in the media edit screen metabox - Thanks Jonas Lundman (http://wordpress.org/support/topic/add-filter-hook-suggestion-to)
-function ua_admin_date_replaced_media_on_edit_media_screen() {
-	if( !function_exists( 'enable_media_replace' ) ) return;
-	global $post;
-	$id = $post->ID;
-	$shortcode = "[file_modified id=$id]";
 
-	$file_modified_time = do_shortcode($shortcode);
+/**
+ * Add Last replaced by EMR plugin in the media edit screen metabox - Thanks Jonas Lundman (http://wordpress.org/support/topic/add-filter-hook-suggestion-to).
+ */
+function ua_admin_date_replaced_media_on_edit_media_screen() {
+	if ( ! function_exists( 'enable_media_replace' ) ) {
+		return;
+	}
+	global $post;
+	$id        = $post->ID;
+	$shortcode = '[file_modified id=' . $id . ']';
+
+	$file_modified_time = do_shortcode( $shortcode );
 	if ( ! $file_modified_time ) {
 		return;
 	}
 	?>
 	<div class="misc-pub-section curtime">
-		<span id="timestamp"><?php _e( 'Revised', 'enable-media-replace' ); ?>: <b><?php echo $file_modified_time; ?></b></span>
+		<span id="timestamp"><?php esc_html_e( 'Revised', 'enable-media-replace' ); ?>: <b><?php echo esc_html( $file_modified_time ); ?></b></span>
 	</div>
 	<?php
 }
