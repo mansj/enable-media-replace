@@ -367,7 +367,7 @@ if ( is_uploaded_file( $_FILES['userfile']['tmp_name'] ) ) {
 	}
 
 	// echo "Updated: " . $number_of_updates;.
-	$returnurl = admin_url( '/post.php?post={$_POST["ID"]}&action=edit&message=1' );
+	$returnurl = admin_url( '/post.php?post=' . $_POST["ID"] . '&action=edit&message=1' );
 
 	// Execute hook actions - thanks rubious for the suggestion!
 	if ( isset( $new_guid ) ) {
@@ -389,4 +389,5 @@ if ( FORCE_SSL_ADMIN ) {
 $returnurl = apply_filters( 'emr_returnurl', $returnurl );
 
 // Save redirection.
-wp_redirect( $returnurl );
+wp_safe_redirect( $returnurl );
+exit();
