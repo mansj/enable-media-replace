@@ -224,7 +224,7 @@ if ( is_uploaded_file( $_FILES['userfile']['tmp_name'] ) ) {
 	$new_filename = $_FILES['userfile']['name'];
 	$new_filesize = $_FILES['userfile']['size'];
 	$new_filetype = $filedata['type'];
-
+	$new_guid     = false;
 	// Save original file permissions.
 	$original_file_perms = fileperms( $current_file ) & 0777;
 
@@ -370,11 +370,9 @@ if ( is_uploaded_file( $_FILES['userfile']['tmp_name'] ) ) {
 	$returnurl = admin_url( '/post.php?post=' . $_POST["ID"] . '&action=edit&message=1' );
 
 	// Execute hook actions - thanks rubious for the suggestion!
-	if ( isset( $new_guid ) ) {
-		// Action hooks should be written in snake case. Leaving old one for now for backwards compatibility.
-		do_action( 'enable_media_replace_upload_done', $new_guid, $current_guid );
-		do_action( 'enable-media-replace-upload-done', $new_guid, $current_guid );
-	}
+	// Action hooks should be written in snake case. Leaving old one for now for backwards compatibility.
+	do_action( 'enable_media_replace_upload_done', $new_guid, $current_guid );
+	do_action( 'enable-media-replace-upload-done', $new_guid, $current_guid );
 } else {
 	// TODO Better error handling when no file is selected.
 	// For now just go back to media management.
